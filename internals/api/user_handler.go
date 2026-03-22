@@ -21,17 +21,11 @@ func (h *UserHandler) RegisterRoutes() {
 	http.HandleFunc("/users/", h.handleUsersByID)
 }
 
-
-
-
 // /users/{id}
-
 
 func (h *UserHandler) handleUsersByID(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-type", "application/json")
-
-
 
 	idStr := strings.TrimPrefix(r.URL.Path, "/users/")
 	id, err := strconv.Atoi(idStr)
@@ -51,18 +45,17 @@ func (h *UserHandler) handleUsersByID(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.WriteHeader(http.StatusNoContent) // 204
-	
+
 	case http.MethodPut:
 		var input struct {
 			Name string `json:"name"`
-			Age int `json:"age"`
+			Age  int    `json:"age"`
 		}
 
 		if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 			http.Error(w, "Invalid json", http.StatusBadRequest)
 			return
 		}
-
 
 		user, ok := h.userService.UpdateUser(id, input.Name, input.Age)
 
@@ -75,14 +68,11 @@ func (h *UserHandler) handleUsersByID(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(user)
 
 	default:
-			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-	
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+
 	}
 
 }
- 
-
-
 
 func (h *UserHandler) handleUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -91,17 +81,13 @@ func (h *UserHandler) handleUsers(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		users := h.userService.ListUsers()
 		json.NewEncoder(w).Encode(users)
-	
-
 
 	case http.MethodPost:
-		
+
 		var input struct {
 			Name string `json:"name"`
-			Age int `json:"age"`
-			
-		}  
-
+			Age  int    `json:"age"`
+		}
 
 		if err := json.NewDecoder(r.Body).Decode(&input); err != nil {
 			http.Error(w, "Invalid JSON", http.StatusBadRequest)
@@ -113,12 +99,8 @@ func (h *UserHandler) handleUsers(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusCreated)
 		json.NewEncoder(w).Encode(user)
 
-
-
 	default:
 		http.Error(w, "Invalid Method", http.StatusMethodNotAllowed)
 	}
 
 }
-
-
